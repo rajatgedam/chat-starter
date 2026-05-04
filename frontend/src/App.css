@@ -1,0 +1,161 @@
+.app {
+  width: min(900px, 92vw);
+  margin: 24px auto;
+  display: grid;
+  gap: 16px;
+}
+
+.hero {
+  background: linear-gradient(135deg, #f3f7ff 0%, #fff2e8 55%, #edfdf7 100%);
+  border: 1px solid #d4d9e1;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 12px 40px rgba(26, 33, 52, 0.08);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #2c5a8a;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 8px 0;
+  font-size: clamp(28px, 5vw, 46px);
+  line-height: 1.1;
+}
+
+.subtitle {
+  margin: 0;
+  color: #39485e;
+}
+
+.memory-note {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #4b5970;
+}
+
+.chat-window {
+  min-height: 52vh;
+  border: 1px solid #d4d9e1;
+  border-radius: 18px;
+  padding: 18px;
+  background: #ffffff;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  overflow-y: auto;
+}
+
+.empty-state {
+  color: #5b6474;
+  margin: 8px 0;
+}
+
+.message {
+  max-width: 85%;
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+
+.message p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.message-role {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.message-user {
+  margin-left: auto;
+  background: #2040f6;
+  color: #ffffff;
+}
+
+.message-assistant {
+  margin-right: auto;
+  background: #eef4ff;
+  color: #1f2937;
+  border: 1px solid #d9e4ff;
+}
+
+.typing {
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.error {
+  margin: 0;
+  color: #b42318;
+  background: #ffefef;
+  border: 1px solid #ffd2d2;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.chat-input {
+  display: grid;
+  gap: 10px;
+}
+
+.chat-input textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 78px;
+  border-radius: 14px;
+  border: 1px solid #d4d9e1;
+  padding: 12px;
+  font: inherit;
+}
+
+.chat-input button {
+  justify-self: end;
+  background: #1e46ff;
+  border: 0;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chat-input button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+@media (max-width: 720px) {
+  .app {
+    width: 94vw;
+    margin: 14px auto;
+  }
+
+  .hero {
+    padding: 18px;
+  }
+
+  .message {
+    max-width: 92%;
+  }
+}
