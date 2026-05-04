@@ -1,4 +1,6 @@
 import type { ChatMessage } from "../services/chatApi";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type ChatWindowProps = {
   messages: ChatMessage[];
@@ -15,7 +17,9 @@ export function ChatWindow({ messages, isLoading }: ChatWindowProps) {
       {messages.map((message, index) => (
         <article key={`${message.role}-${index}`} className={`message message-${message.role}`}>
           <span className="message-role">{message.role}</span>
-          <p>{message.content}</p>
+          <div className="message-content">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.content}</ReactMarkdown>
+          </div>
         </article>
       ))}
 
