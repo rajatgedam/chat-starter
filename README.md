@@ -2,6 +2,8 @@
 
 A full-stack chat app starter with persistent sessions, Hugging Face LLM integration, and a modern React UI.
 
+Default LLM: `openai/gpt-oss-20b` via Hugging Face Router Chat Completions API.
+
 ## Current Capabilities
 
 - Persistent chat history in PostgreSQL (survives refreshes and backend restarts)
