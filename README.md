@@ -1,10 +1,28 @@
-# Starter AI Chat (React + TypeScript)
+# Starter AI Chat (React + TypeScript + Express + PostgreSQL)
 
-A simple ChatGPT-style starter app for learning AI integration and showcasing on GitHub.
+A full-stack chat app starter with persistent sessions, Hugging Face LLM integration, and a modern React UI.
 
-## Quick Startup (Configure, Build, Run)
+## Current Capabilities
 
-1. Install dependencies:
+- Persistent chat history in PostgreSQL (survives refreshes and backend restarts)
+- Up to 3 chat sessions per client (configurable)
+- Left sidebar session switcher with auto-generated subject lines
+- Rolling prompt memory window (last 8 turns sent as context)
+- Hugging Face chat completion integration
+- Automatic continuation when model output is cut by token limit
+- Live usage telemetry in UI (prompt/completion/total tokens + remaining limit)
+- Input validation, error handling, and backend tests
+
+## Tech Stack
+
+- Frontend: React + TypeScript + Vite
+- Backend: Express + TypeScript
+- Database: PostgreSQL (Docker Compose friendly)
+- LLM provider: Hugging Face Router Chat Completions API
+
+## Quick Start
+
+### 1) Install dependencies
 
 ```bash
 npm install
@@ -12,70 +30,95 @@ npm --prefix frontend install
 npm --prefix backend install
 ```
 
-2. Configure environment:
+### 2) Configure environment
 
 ```bash
 cp backend/.env.example backend/.env
 ```
 
-Add your Hugging Face token to `backend/.env`:
+Update backend/.env with at least your Hugging Face key:
 
 ```env
 HUGGINGFACE_API_KEY=hf_your_token_here
+DATABASE_URL=postgres://chat:chat@localhost:5432/chatdb
+MAX_SESSIONS_PER_CLIENT=3
 ```
 
-3. Build the app:
+### 3) Start PostgreSQL with Docker
+
+```bash
+docker compose up -d postgres
+```
+
+### 4) Build
 
 ```bash
 npm run build
 ```
 
-4. Run the app (development):
+### 5) Run in development
 
 ```bash
 npm run dev
 ```
 
-Frontend: `http://localhost:5173`  
-Backend: `http://localhost:3001`
+Default local URLs:
 
-## What This Project Shows
+- Frontend: http://localhost:5173 (or next free Vite port)
+- Backend: http://localhost:3001
 
-- Full-stack chat flow with a React UI and Express API
-- LLM integration through Hugging Face Router Chat Completions
-- Short-term conversation memory (rolling window)
-- Input validation and backend API tests
+## Environment Variables (Backend)
 
-## Stack
+Required:
 
-- Frontend: React + TypeScript + Vite
-- Backend: Express + TypeScript
-- Model API: Hugging Face Inference API (free tier)
-- Memory: In-memory rolling window (last 8 turns per session)
+- HUGGINGFACE_API_KEY
+- DATABASE_URL
 
-## Project Structure
+Optional:
 
-- `frontend`: React web app
-- `backend`: Express API server
-- `.env.example`: environment variable template
+- HUGGINGFACE_MODEL (default: openai/gpt-oss-20b)
+- HUGGINGFACE_MAX_TOKENS (default: 900)
+- MAX_SESSIONS_PER_CLIENT (default: 3)
+- PORT (default: 3001)
+- CORS_ORIGIN (default: *)
 
 ## Scripts
 
+Root:
+
 ```bash
-npm run dev      # run frontend + backend
-npm run build    # build both projects
-npm run test     # run backend tests
+npm run dev
+npm run build
+npm run test
+```
+
+Backend:
+
+```bash
+npm --prefix backend run dev
+npm --prefix backend run build
+npm --prefix backend run test
+```
+
+Frontend:
+
+```bash
+npm --prefix frontend run dev
+npm --prefix frontend run build
 ```
 
 ## API
 
-### `POST /api/chat`
+### POST /api/chat
+
+Sends a user message for a client/session and returns assistant reply plus usage metadata.
 
 Request body:
 
 ```json
 {
   "message": "Explain transformers simply",
+  "clientId": "optional-client-id",
   "sessionId": "optional-session-id"
 }
 ```
@@ -85,49 +128,114 @@ Response body:
 ```json
 {
   "reply": "...",
+  "clientId": "...",
   "sessionId": "...",
-  "memoryTurns": 3
+  "memoryTurns": 3,
+  "usage": {
+    "promptTokens": 120,
+    "completionTokens": 210,
+    "totalTokens": 330
+  },
+  "rateLimit": {
+    "remainingTokens": 748701,
+    "limitTokens": 750000,
+    "resetTokensMs": 103,
+    "remainingRequests": 1439999,
+    "limitRequests": 1440000,
+    "resetRequestsMs": 60
+  }
 }
 ```
 
-### `GET /health`
+Notes:
 
-Returns `{ "status": "ok" }`.
+- If sessionId is not provided, backend creates one (subject to session limit).
+- Returns 409 when client session limit is reached.
 
-## Deployment
+### GET /api/chat/sessions?clientId=...
 
-### Frontend (Vercel/Netlify)
+Lists sessions for a client, newest first.
 
-- Build command: `npm --prefix frontend run build`
-- Output directory: `frontend/dist`
-- Environment variable: `VITE_API_BASE_URL=https://your-backend-url`
+Response shape:
 
-### Backend (Render/Railway/Fly)
+```json
+{
+  "sessions": [
+    {
+      "sessionId": "...",
+      "clientId": "...",
+      "title": "Plan my 7-day trip to Kyoto with food and…",
+      "createdAt": "...",
+      "updatedAt": "...",
+      "messageCount": 2
+    }
+  ]
+}
+```
 
-- Start command: `npm --prefix backend run start`
-- Build command: `npm --prefix backend run build`
-- Required env vars:
-  - `HUGGINGFACE_API_KEY`
-  - `HUGGINGFACE_MODEL` (optional)
-  - `PORT`
-  - `CORS_ORIGIN`
+### POST /api/chat/sessions
 
-## Limitations (Starter Scope)
+Creates a new session for a client.
 
-- No persistent database
-- No authentication
-- No streaming responses
-- Memory resets when backend restarts
+Request body:
 
-## Next Improvements
+```json
+{
+  "clientId": "optional-client-id"
+}
+```
 
-1. Add streaming responses via SSE.
-2. Add persistent storage (SQLite/PostgreSQL).
-3. Add fallback provider for reliability.
-4. Add login and per-user history.
+Returns 409 when client already has max sessions.
 
-## GitHub Checklist
+### GET /api/chat/sessions/:sessionId/messages?clientId=...
 
-- Add screenshots or a short demo GIF to this README
-- Add your deployed frontend URL and backend URL
-- Keep `backend/.env` out of source control
+Returns full message history for one session.
+
+### GET /health
+
+Returns:
+
+```json
+{ "status": "ok" }
+```
+
+## Frontend UX Features
+
+- Sidebar chat list with short subject lines
+- One-click switching between sessions
+- New chat creation from sidebar
+- Chat history restored automatically on refresh
+- Bottom usage panel with token and limit telemetry
+
+## Docker
+
+Start DB:
+
+```bash
+docker compose up -d postgres
+```
+
+Check status:
+
+```bash
+docker compose ps
+```
+
+Stop:
+
+```bash
+docker compose down
+```
+
+## Known Limitations
+
+- No user authentication yet
+- No streaming token output yet (non-SSE responses)
+- Client identity is browser-local (localStorage)
+
+## Suggested Next Steps
+
+1. Add auth and per-user server-side identity.
+2. Add rename/delete session actions in sidebar.
+3. Add retention policy and cleanup job for old sessions.
+4. Add streaming responses via SSE.

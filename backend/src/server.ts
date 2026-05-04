@@ -1,11 +1,18 @@
 import dotenv from "dotenv";
 import { buildApp } from "./app";
+import { initSessionStore } from "./lib/memory/sessionMemory";
 
 dotenv.config();
 
-const app = buildApp();
-const port = Number(process.env.PORT ?? 3001);
+async function startServer() {
+  await initSessionStore();
 
-app.listen(port, () => {
-  console.log(`Backend running at http://localhost:${port}`);
-});
+  const app = buildApp();
+  const port = Number(process.env.PORT ?? 3001);
+
+  app.listen(port, () => {
+    console.log(`Backend running at http://localhost:${port}`);
+  });
+}
+
+void startServer();

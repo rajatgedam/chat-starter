@@ -4,8 +4,8 @@ import { buildApp } from "../src/app";
 import { clearSessions } from "../src/lib/memory/sessionMemory";
 
 describe("POST /api/chat", () => {
-  afterEach(() => {
-    clearSessions();
+  afterEach(async () => {
+    await clearSessions();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
     delete process.env.HUGGINGFACE_API_KEY;
