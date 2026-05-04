@@ -20,13 +20,13 @@ jobs:
           node-version: 24
 
       - name: Install root deps
-        run: npm ci
+        run: npm install
 
       - name: Install frontend deps
-        run: npm --prefix frontend ci
+        run: npm --prefix frontend install
 
       - name: Install backend deps
-        run: npm --prefix backend ci
+        run: npm --prefix backend install
 
       - name: Run tests
         run: npm run test
