@@ -1,6 +1,6 @@
-# Starter AI Chat (React + TypeScript + Express + PostgreSQL)
+# NexusChat (React + TypeScript + Express + PostgreSQL)
 
-A full-stack chat app starter with persistent sessions, Hugging Face LLM integration, and a modern React UI.
+A full-stack chat app with persistent sessions, Hugging Face LLM integration, and a modern React UI.
 
 Default LLM: `openai/gpt-oss-20b` via Hugging Face Router Chat Completions API.
 

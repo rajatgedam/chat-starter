@@ -288,7 +288,7 @@ function App() {
 
         <header className="hero">
           <p className="eyebrow">Learning Project</p>
-          <h1>Starter AI Chat</h1>
+          <h1>NexusChat</h1>
           <p className="subtitle">
             React + TypeScript frontend, Express backend, Hugging Face Inference.
           </p>

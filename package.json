@@ -1,7 +1,7 @@
 {
   "name": "chat",
   "version": "1.0.0",
-  "description": "Starter AI chat app with React + Express + Hugging Face",
+  "description": "NexusChat — full-stack AI chat with React + Express + Hugging Face",
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
