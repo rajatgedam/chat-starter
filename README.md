@@ -22,8 +22,7 @@ Default LLM: `openai/gpt-oss-20b` via Hugging Face Router Chat Completions API.
 - Database: PostgreSQL (Docker Compose friendly)
 - LLM provider: Hugging Face Router Chat Completions API
 
-<img width="1252" height="778" alt="image" src="https://github.com/user-attachments/assets/015ec477-981c-4662-98dc-9df84998d2e4" />
-
+<img width="1187" height="864" alt="image" src="https://github.com/user-attachments/assets/e9907ca7-d45a-4108-ad5e-ed15451bbcd7" />
 
 ## Quick Start
 
