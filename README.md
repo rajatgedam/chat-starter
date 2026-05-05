@@ -238,7 +238,7 @@ docker compose down
 - No streaming token output yet (non-SSE responses)
 - Client identity is browser-local (localStorage)
 
-## Suggested Next Steps
+## Next Steps
 
 1. Add auth and per-user server-side identity.
 2. Add rename/delete session actions in sidebar.
